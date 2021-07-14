@@ -134,21 +134,48 @@ def staff():
     if request.method == 'POST':
         first_name = request.form['first_name']
         last_name = request.form['last_name']
+        department = request.form['department']
         gender = request.form['gender']
         address = request.form['address']
-        designation = request.form['designation']
+        telephone = request.form['telephone']
 
-        new_doctor = Doctor(first_name = first_name, last_name = last_name, gender = gender, address = address, designation = designation)
+        new_staff = Staff(first_name = first_name, last_name = last_name, department = department, gender = gender, address = address, telephone = telephone)
 
-        db.session.add(new_doctor)
+        db.session.add(new_staff)
         db.session.commit()
 
-        flash("Doctor successfully added", "success")
+        flash("Staff member successfully registered", "success")
         
     genders = ['M', 'F']
-    doctors = Doctor.query.all()
+    staff = Staff.query.all()
 
-    return render_template('staff.html')
+    return render_template('staff.html', genders = genders, staff = staff)
+
+@app.route('/edit_staff', methods = ['POST'])
+def edit_staff():
+    if request.method == 'POST':
+        staff_id = request.form['staff_id']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        department = request.form['department']
+        gender = request.form['gender']
+        address = request.form['address']
+        telephone = request.form['telephone']
+        
+        staff_to_edit = Staff.query.filter_by(id = staff_id).first()
+        staff_to_edit.first_name = first_name
+        staff_to_edit.last_name = last_name
+        staff_to_edit.department = department
+        staff_to_edit.gender = gender
+        staff_to_edit.address = address
+        staff_to_edit.telephone = telephone
+
+        db.session.add(staff_to_edit)
+        db.session.commit()
+
+        flash("Staff data successfully edited", "success")
+
+        return redirect(url_for('staff'))
 
 @app.route('/appointments', methods = ['GET', 'POST'])
 def appointments():

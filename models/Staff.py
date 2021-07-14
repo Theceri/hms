@@ -11,4 +11,3 @@ class Staff(db.Model):
     gender = db.Column(db.String(80), unique=False, nullable=False)
     address = db.Column(db.String(80), unique=False, nullable=False)
     telephone = db.Column(db.String(80), unique=False, nullable=False)
-    doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.id'))

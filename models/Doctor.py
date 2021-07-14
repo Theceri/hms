@@ -12,5 +12,4 @@ class Doctor(db.Model):
     designation = db.Column(db.String(80), unique=False, nullable=False)
 
     patients = db.relationship('Patient', backref='doctors', lazy=True)
-    staff = db.relationship('Staff', backref='doctors', lazy=True)
     appointments = db.relationship('Appointment', backref='doctors', lazy=True)
