@@ -16,6 +16,7 @@ from models.Doctor import Doctor
 from models.Staff import Staff
 from models.PatientDiagnosis import PatientDiagnosis
 from models.Bill import Bill
+from models.Appointment import Appointment
 
 @app.before_first_request
 def create_tables():
@@ -53,9 +54,35 @@ def patients():
 
     genders = ['M', 'F']
     patients = Patient.query.all()
-    doctors = Doctor.query.all()    
+    doctors = Doctor.query.all()
 
     return render_template('patients.html', genders = genders, patients = patients, doctors = doctors)
+
+@app.route('/edit_patient', methods = ['POST'])
+def edit_patient():
+    if request.method == 'POST':
+        patient_id = request.form['patient_id']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        gender = request.form['gender']
+        address = request.form['address']
+        telephone = request.form['telephone']
+        doctor = request.form['doctor']
+
+        patient_to_edit = Patient.query.filter_by(id = patient_id).first()
+        patient_to_edit.first_name = first_name
+        patient_to_edit.last_name = last_name
+        patient_to_edit.gender = gender
+        patient_to_edit.address = address
+        patient_to_edit.telephone = telephone
+        patient_to_edit.doctor_id = doctor
+
+        db.session.add(patient_to_edit)
+        db.session.commit()
+
+        flash("Patient data successfully edited", "success")
+
+        return redirect(url_for('patients'))
 
 @app.route('/doctors', methods = ['GET', 'POST'])
 def doctors():
@@ -78,9 +105,54 @@ def doctors():
 
     return render_template('doctors.html', genders = genders, doctors = doctors)
 
+@app.route('/edit_doctor', methods = ['POST'])
+def edit_doctor():
+    if request.method == 'POST':
+        doctor_id = request.form['doctor_id']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        gender = request.form['gender']
+        address = request.form['address']
+        designation = request.form['designation']
+
+        doctor_to_edit = Doctor.query.filter_by(id = doctor_id).first()
+        doctor_to_edit.first_name = first_name
+        doctor_to_edit.last_name = last_name
+        doctor_to_edit.gender = gender
+        doctor_to_edit.address = address
+        doctor_to_edit.designation = designation
+
+        db.session.add(doctor_to_edit)
+        db.session.commit()
+
+        flash("Doctor data successfully edited", "success")
+
+        return redirect(url_for('doctors'))
+
 @app.route('/staff', methods = ['GET', 'POST'])
 def staff():
+    if request.method == 'POST':
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        gender = request.form['gender']
+        address = request.form['address']
+        designation = request.form['designation']
+
+        new_doctor = Doctor(first_name = first_name, last_name = last_name, gender = gender, address = address, designation = designation)
+
+        db.session.add(new_doctor)
+        db.session.commit()
+
+        flash("Doctor successfully added", "success")
+        
+    genders = ['M', 'F']
+    doctors = Doctor.query.all()
+
     return render_template('staff.html')
+
+@app.route('/appointments', methods = ['GET', 'POST'])
+def appointments():
+    return render_template('appointments.html')
 
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():

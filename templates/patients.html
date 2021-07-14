@@ -45,10 +45,8 @@
                         <div class="dropdown">
                             <label for="">Choose Doctor *(use this only if the patient has been allocated a doctor for their appointment)</label>
                             <select name="doctor">
+                                <option value="" selected disabled hidden>Choose here</option>
                                 {% for doctor in doctors %}
-                                <option value="none" selected disabled hidden>
-                                    Select an Option
-                                </option>
                                 <option value="{{doctor.id}}">{{doctor.first_name}} {{doctor.last_name}} - {{doctor.designation}}</option>
                                 {% endfor %}
                             </select>
@@ -67,45 +65,76 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">id</th>
-                <th scope="col">Body</th>
-                <th scope="col">Survey</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Address</th>
+                <th scope="col">Telephone</th>
+                <th scope="col">Doctor Assigned</th>
                 <th scope="col">Edit</th>
             </tr>
         </thead>
         <tbody>
-            {% for question in questions %}
+            {% for patient in patients %}
             <tr>
                 <td></td>
-                <td>{{question.id}}</td>
-                <td>{{question.body}}</td>
-                <td>{{question.survey.name}}</td>
+                <td>{{patient.id}}</td>
+                <td>{{patient.first_name}}</td>
+                <td>{{patient.last_name}}</td>
+                <td>{{patient.gender}}</td>
+                <td>{{patient.address}}</td>
+                <td>{{patient.telephone}}</td>
+                <td>{{patient.doctors.first_name}} {{patient.doctors.last_name}} - {{patient.doctors.designation}}</td>
                 <td>
                     <a href="" type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#exampleModal{{question.id}}">
+                        data-bs-target="#exampleModal{{patient.id}}">
                         Edit
                     </a>
-                    <div class="modal fade" id="exampleModal{{question.id}}" tabindex="-1"
+                    <div class="modal fade" id="exampleModal{{patient.id}}" tabindex="-1"
                         aria-labelledby="exampleModalLabel" aria-hidden="true" data-target>
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Edit Question</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Patient Data</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="/edit_question" method="post">
-                                        <input type="hidden" name="question_id" value="{{question.id}}">
+                                    <form action="/edit_patient" method="post">
+                                        <input type="hidden" name="patient_id" value="{{patient.id}}">
                                         <div class="form-group">
-                                            <label for="" class="form-label">Body</label>
-                                            <input type="text" class="form-control" name="body" id="body"
-                                                aria-describedby="emailHelp" value="{{question.body}}">
+                                            <label for="" class="form-label">First Name</label>
+                                            <input type="text" class="form-control" name="first_name" id=""
+                                                aria-describedby="emailHelp" value="{{patient.first_name}}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="" class="form-label">Last Name</label>
+                                            <input type="text" class="form-control" name="last_name" id=""
+                                                aria-describedby="emailHelp" value="{{patient.last_name}}">
                                         </div>
                                         <div class="dropdown">
-                                            <label for="">Choose Survey</label>
-                                            <select name="survey_id">
-                                                {% for survey in surveys %}
-                                                <option value="{{survey.id}}">{{survey.name}}</option>
+                                            <label for="">Gender</label>
+                                            <select name="gender">
+                                                {% for gender in genders %}
+                                                <option value="{{gender}}">{{gender}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="" class="form-label">Address</label>
+                                            <input type="text" class="form-control" name="address" id=""
+                                                aria-describedby="emailHelp" value="{{patient.address}}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="" class="form-label">Telephone</label>
+                                            <input type="text" class="form-control" name="telephone" id=""
+                                                aria-describedby="emailHelp" value="{{patient.telephone}}">
+                                        </div>
+                                        <div class="dropdown">
+                                            <label for="">Doctor</label>
+                                            <select name="doctor">
+                                                {% for doctor in doctors %}
+                                                <option value="{{doctor.id}}">{{doctor.first_name}} {{doctor.last_name}} - {{doctor.designation}}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>

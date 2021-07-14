@@ -13,3 +13,4 @@ class Doctor(db.Model):
 
     patients = db.relationship('Patient', backref='doctors', lazy=True)
     staff = db.relationship('Staff', backref='doctors', lazy=True)
+    appointments = db.relationship('Appointment', backref='doctors', lazy=True)

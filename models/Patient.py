@@ -14,3 +14,4 @@ class Patient(db.Model):
     
     patient_diagnosis = db.relationship('PatientDiagnosis', backref='patients', lazy=True)
     bill = db.relationship('Bill', backref='patients', lazy=True)
+    appointments = db.relationship('Appointment', backref='patients', lazy=True)
