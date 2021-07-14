@@ -1,16 +1,31 @@
-<!DOCTYPE html>
+{% extends "base.html" %} {% block content %}
 
-<html lang="en">
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card-counter primary">
+        <i class="fa fa-users"></i>
+        <span class="count-numbers"></span>
+        <span class="count-name">Patients</span>
+      </div>
+    </div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>This is the dashboard you have all been looking forward to</title>
-</head>
+    <div class="col-md-3">
+      <div class="card-counter danger">
+        <i class="fa fa-users"></i>
+        <span class="count-numbers"></span>
+        <span class="count-name">Doctors</span>
+      </div>
+    </div>
 
-<body>
-    <p>This is the dashboard you have all been looking forward to</p>    
-</body>
+    <div class="col-md-3">
+      <div class="card-counter danger">
+        <i class="fa fa-users"></i>
+        <span class="count-numbers"></span>
+        <span class="count-name">Staff</span>
+      </div>
+    </div>
+  </div>
+</div>
 
-</html>
+{% endblock %}

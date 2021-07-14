@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary mb-3 mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Register Doctor
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Register Doctor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/doctors">
+                        <div class="mb-3">
+                            <label for="" class="form-label">First Name</label>
+                            <input type="text" class="form-control" name="first_name" id="first_name" aria-describedby="">
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" name="last_name" id="last_name" aria-describedby="">
+                        </div>
+                        <div class="dropdown">
+                            <label for="">Choose Gender</label>
+                            <select name="gender" id="survey_id">
+                                {% for gender in genders %}
+                                <option value="{{gender}}">{{gender}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Address</label>
+                            <input type="text" class="form-control" name="address" id="address" aria-describedby="">
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Designation</label>
+                            <input type="text" class="form-control" name="designation" id="designation" placeholder="e.g. General Practitioner, Surgeon e.t.c." id="body" aria-describedby="">
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- this is the code for the table -->
+    <table id="myTable" class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">id</th>
+                <th scope="col">Body</th>
+                <th scope="col">Survey</th>
+                <th scope="col">Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for question in questions %}
+            <tr>
+                <td></td>
+                <td>{{question.id}}</td>
+                <td>{{question.body}}</td>
+                <td>{{question.survey.name}}</td>
+                <td>
+                    <a href="" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal{{question.id}}">
+                        Edit
+                    </a>
+                    <div class="modal fade" id="exampleModal{{question.id}}" tabindex="-1"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true" data-target>
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Question</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/edit_question" method="post">
+                                        <input type="hidden" name="question_id" value="{{question.id}}">
+                                        <div class="form-group">
+                                            <label for="" class="form-label">Body</label>
+                                            <input type="text" class="form-control" name="body" id="body"
+                                                aria-describedby="emailHelp" value="{{question.body}}">
+                                        </div>
+                                        <div class="dropdown">
+                                            <label for="">Choose Survey</label>
+                                            <select name="survey_id">
+                                                {% for survey in surveys %}
+                                                <option value="{{survey.id}}">{{survey.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <input type="submit" class="btn btn-primary">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
