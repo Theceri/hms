@@ -46,6 +46,10 @@
                             <label for="" class="form-label">Telephone</label>
                             <input type="text" class="form-control" name="telephone" id="" aria-describedby="">
                         </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Email</label>
+                            <input type="text" class="form-control" name="email" id="" aria-describedby="">
+                        </div>
                         <br>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -66,6 +70,7 @@
                 <th scope="col">Gender</th>
                 <th scope="col">Address</th>
                 <th scope="col">Telephone</th>
+                <th scope="col">Email</th>
                 <th scope="col">Edit</th>
             </tr>
         </thead>
@@ -80,6 +85,7 @@
                 <td>{{staff_member.gender}}</td>
                 <td>{{staff_member.address}}</td>
                 <td>{{staff_member.telephone}}</td>
+                <td>{{staff_member.email}}</td>
                 <td>
                     <a href="" type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#exampleModal{{staff_member.id}}">
@@ -129,6 +135,11 @@
                                             <label for="" class="form-label">Telephone</label>
                                             <input type="text" class="form-control" name="telephone" id=""
                                                 aria-describedby="emailHelp" value="{{staff_member.telephone}}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="" class="form-label">Email</label>
+                                            <input type="text" class="form-control" name="email" id=""
+                                                aria-describedby="emailHelp" value="{{staff_member.email}}">
                                         </div>
                                         <input type="submit" class="btn btn-primary">
                                     </form>

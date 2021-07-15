@@ -22,20 +22,24 @@ from models.Appointment import Appointment
 def create_tables():
     db.create_all()
 
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args,**kwargs)
+        else:
+            flash('Unauthorized! Please log in', 'danger')
+            return redirect(url_for('login', next = request.url))
+    return wrap
+
 @app.route('/', methods = ['GET', 'POST'])
+@login_required
 def dashboard():
-    # orgs = Org.query.all()
-    # branches = Branch.query.all()
-    # users = User.query.all()
-    # surveys = Survey.query.all()
-    # questions = Question.query.all()
-    # respondents = Respondent.query.all()
-    # answers = Answer.query.all()
-    # number_of_respondents = Respondent.query.count()
 
     return render_template('dashboard.html')
 
 @app.route('/patients', methods = ['GET', 'POST'])
+@login_required
 def patients():
     if request.method == 'POST':
         first_name = request.form['first_name']
@@ -59,6 +63,7 @@ def patients():
     return render_template('patients.html', genders = genders, patients = patients, doctors = doctors)
 
 @app.route('/edit_patient', methods = ['POST'])
+@login_required
 def edit_patient():
     if request.method == 'POST':
         patient_id = request.form['patient_id']
@@ -85,6 +90,7 @@ def edit_patient():
         return redirect(url_for('patients'))
 
 @app.route('/doctors', methods = ['GET', 'POST'])
+@login_required
 def doctors():
     if request.method == 'POST':
         first_name = request.form['first_name']
@@ -106,6 +112,7 @@ def doctors():
     return render_template('doctors.html', genders = genders, doctors = doctors)
 
 @app.route('/edit_doctor', methods = ['POST'])
+@login_required
 def edit_doctor():
     if request.method == 'POST':
         doctor_id = request.form['doctor_id']
@@ -130,6 +137,7 @@ def edit_doctor():
         return redirect(url_for('doctors'))
 
 @app.route('/staff', methods = ['GET', 'POST'])
+@login_required
 def staff():
     if request.method == 'POST':
         first_name = request.form['first_name']
@@ -138,13 +146,20 @@ def staff():
         gender = request.form['gender']
         address = request.form['address']
         telephone = request.form['telephone']
+        email = request.form['email']
+        password = '1234'
+        hashed_password = generate_password_hash(password = password)
 
-        new_staff = Staff(first_name = first_name, last_name = last_name, department = department, gender = gender, address = address, telephone = telephone)
+        # check that email does not exist before registering the user
+        if Staff.check_email_exists(email):
+            flash("The user already exists. Please try registering with a different email.", "danger")
+        else:
+            new_staff_member = Staff(first_name = first_name, last_name = last_name, department = department, gender = gender, address = address, telephone = telephone, email = email, password = hashed_password)
 
-        db.session.add(new_staff)
-        db.session.commit()
+            db.session.add(new_staff_member)
+            db.session.commit()
 
-        flash("Staff member successfully registered", "success")
+            flash("Staff member successfully registered", "success")
         
     genders = ['M', 'F']
     staff = Staff.query.all()
@@ -152,6 +167,7 @@ def staff():
     return render_template('staff.html', genders = genders, staff = staff)
 
 @app.route('/edit_staff', methods = ['POST'])
+@login_required
 def edit_staff():
     if request.method == 'POST':
         staff_id = request.form['staff_id']
@@ -161,6 +177,7 @@ def edit_staff():
         gender = request.form['gender']
         address = request.form['address']
         telephone = request.form['telephone']
+        email = request.form['email']
         
         staff_to_edit = Staff.query.filter_by(id = staff_id).first()
         staff_to_edit.first_name = first_name
@@ -169,6 +186,7 @@ def edit_staff():
         staff_to_edit.gender = gender
         staff_to_edit.address = address
         staff_to_edit.telephone = telephone
+        staff_to_edit.email = email
 
         db.session.add(staff_to_edit)
         db.session.commit()
@@ -178,12 +196,68 @@ def edit_staff():
         return redirect(url_for('staff'))
 
 @app.route('/appointments', methods = ['GET', 'POST'])
+@login_required
 def appointments():
     return render_template('appointments.html')
 
-@app.route('/logout', methods = ['GET', 'POST'])
+@app.route('/register', methods = ['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        department = request.form['department']
+        gender = request.form['gender']
+        address = request.form['address']
+        telephone = request.form['telephone']
+        email = request.form['email']
+        password = request.form['password']
+        hashed_password = generate_password_hash(password = password)
+
+        # check that email does not exist before registering the user
+        if Staff.check_email_exists(email):
+            flash("The user already exists. Please try registering with a different email.", "danger")
+        else:
+            new_staff_member = Staff(first_name = first_name, last_name = last_name, department = department, gender = gender, address = address, telephone = telephone, email = email, password = hashed_password)
+
+            db.session.add(new_staff_member)
+            db.session.commit()
+
+            flash("You have successfully signed up. You can now log in to your account by going to the login page.", "success")
+
+    genders = ['M', 'F']
+
+    return render_template('register.html', genders = genders)
+
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        # check if email exist
+        if Staff.check_email_exists(email = email):
+           # if the email exists check if password is correct
+           if Staff.check_password(email = email, password = password):
+               session['logged_in'] = True
+               session['first_name'] = Staff.fetch_by_email(email).first_name
+
+               return redirect(url_for('dashboard'))
+           else:
+               flash("Incorrect password","danger")
+
+               return render_template('login.html')
+        else:
+            flash("Email does not exist","danger")
+
+    return render_template("login.html")
+
+# Log Out route
+@app.route('/logout')
 def logout():
-    pass
+    session.clear()
+    flash('You are now logged out','success')
+
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run()
