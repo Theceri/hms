@@ -4,9 +4,9 @@
 
 <div class="container">
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary mb-3 mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <!-- <button type="button" class="btn btn-primary mb-3 mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Register Staff Member
-    </button>
+    </button> -->
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -49,6 +49,14 @@
                         <div class="mb-3">
                             <label for="" class="form-label">Email</label>
                             <input type="text" class="form-control" name="email" id="" aria-describedby="">
+                        </div>
+                        <div class="dropdown">
+                            <label for="">Choose Role</label>
+                            <select name="role">
+                                {% for role in roles %}
+                                <option value="{{role.id}}">{{role.name}}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <br>
                         <button type="submit" class="btn btn-primary">Submit</button>

@@ -10,6 +10,7 @@ class Doctor(db.Model):
     gender = db.Column(db.String(80), unique=False, nullable=False)
     address = db.Column(db.String(80), unique=False, nullable=False)
     designation = db.Column(db.String(80), unique=False, nullable=False)
+    role = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     patients = db.relationship('Patient', backref='doctors', lazy=True)
     appointments = db.relationship('Appointment', backref='doctors', lazy=True)

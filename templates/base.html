@@ -12,16 +12,35 @@
 
   <!-- datatables -->
   <link href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" rel="stylesheet" />
-  
+
   <!-- bootsnipp home cards stuff -->
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"
-  id="bootstrap-css" />
+    id="bootstrap-css" />
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
   <link rel="stylesheet" href="/static/css/home_cards.css" />
   <link rel="stylesheet" href="/static/css/styles.css" />
+
+  <!-- fullcalendar -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.js"
+    integrity="sha256-AOrsg7pOO9zNtKymdz4LsI+KyLEHhTccJrZVU4UFwIU=" crossorigin="anonymous"></script>
+
+  <meta charset='utf-8' />
+  <link href='fullcalendar/main.css' rel='stylesheet' />
+  <script src='fullcalendar/main.js'></script>
+  <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var calendarEl = document.getElementById('calendar');
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth'
+      });
+      calendar.render();
+    });
+
+  </script>
 
   <title>HMS</title>
 </head>
@@ -30,7 +49,8 @@
   <div class="container">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/" style="font-weight: 800; font-size: 24px;">H<span style="color: rgb(146, 31, 31);">MS</style></a>
+        <a class="navbar-brand" href="/" style="font-weight: 800; font-size: 24px;">H<span
+            style="color: rgb(146, 31, 31);">MS</style></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
           aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -52,9 +72,13 @@
             <li class="nav-item">
               <a class="nav-link active link-button m-2" aria-current="page" href="{{url_for('staff')}}">Staff</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link active link-button m-2" aria-current="page" href="{{url_for('roles')}}">Roles</a>
+            </li>
           </ul>
         </div>
-        <div><a class="nav-link active btn btn-info text-light link-button m-2 me-auto" aria-current="page" href="{{url_for('logout')}}">Log Out</a></div>
+        <div><a class="nav-link active btn btn-info text-light link-button m-2 me-auto" aria-current="page"
+            href="{{url_for('logout')}}">Log Out</a></div>
       </div>
     </nav>
   </div>

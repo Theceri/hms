@@ -57,17 +57,12 @@
                     <label for="materialFormRegisterNameEx">Department</label>
                   </div>
                   <div class="dropdown md-form>
-                    <label for="">Choose Gender</label>
-                    <select name="gender">
-                        {% for gender in genders %}
-                        <option value="{{gender}}">{{gender}}</option>
+                    <label for="">Choose Role</label>
+                    <select name="role">
+                        {% for role in roles %}
+                        <option value="{{role.id}}">{{role.name}}</option>
                         {% endfor %}
                     </select>
-                  </div>
-                  <div class="md-form">
-                    <i class="fa fa-envelope prefix grey-text"></i>
-                    <input type="text" name="address" id="materialFormRegisterEmailEx" class="form-control">
-                    <label for="materialFormRegisterEmailEx">Address</label>
                   </div>
                   <div class="md-form">
                     <i class="fa fa-envelope prefix grey-text"></i>

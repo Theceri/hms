@@ -9,9 +9,9 @@ class Staff(db.Model):
     first_name = db.Column(db.String(80), unique=False, nullable=False)
     last_name = db.Column(db.String(80), unique=False, nullable=False)
     department = db.Column(db.String(80), unique=False, nullable=False)
-    gender = db.Column(db.String(80), unique=False, nullable=False)
-    address = db.Column(db.String(80), unique=False, nullable=False)
+    role = db.Column(db.String(80), unique=False, nullable=False)
     telephone = db.Column(db.String(80), unique=False, nullable=False)
+    role = db.Column(db.Integer, db.ForeignKey('roles.id'))
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String, nullable = False)
 
