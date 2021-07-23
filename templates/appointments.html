@@ -47,10 +47,12 @@
               <label for="">Choose Doctor</label>
               <select name="doctor">
                 {% for doctor in doctors %}
+                {% if doctor.roles.name == 'Medical Staff' %}
                 <option value="{{doctor.id}}">
                   {{doctor.first_name}} {{doctor.last_name}} -
-                  {{doctor.designation}}
+                  {{doctor.department}}
                 </option>
+                {% endif %}
                 {% endfor %}
               </select>
             </div>
@@ -116,6 +118,9 @@
               ></textarea>
               <label for="floatingTextarea">Lab Report</label>
             </div>
+            <div class="mb-3">
+                <input type="hidden" id="" name="status" value="0" />
+            </div>
             <br />
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
@@ -134,9 +139,9 @@
           </h5>
           <div class="card-body">
             <h5 class="card-title">
-              Doctor: {{ appointment.doctors.first_name }} {{
-              appointment.doctors.last_name }} - {{
-              appointment.doctors.designation }}
+              Doctor: {{ appointment.staff.first_name }} {{
+              appointment.staff.last_name }} - {{
+              appointment.staff.department }}
             </h5>
             <p class="card-text">Start Time: {{ appointment.start_time }}</p>
             <p class="card-text">End Time: {{ appointment.end_time }}</p>
@@ -194,19 +199,27 @@
                       />
                       <div class="dropdown">
                         <label for="">Choose Patient</label>
+
                         <select name="patient">
-                          {% for patient in patients %} {% if
-                          appointment.patients.id == patient.id%}
-                          <option selected value="{{patient.first_name}}">
+
+                          {% for patient in patients %} 
+                          
+                          {% if appointment.patients.id == patient.id%}
+
+                          <option selected value="{{patient.id}}">
                             {{patient.first_name}} {{patient.last_name}} -
                             {{patient.telephone}}
                           </option>
+
                           {% else %}
-                          <option value="{{patient.first_name}}">
+
+                          <option value="{{patient.id}}">
                             {{patient.first_name}} {{patient.last_name}} -
                             {{patient.telephone}}
                           </option>
+
                           {% endif %} {% endfor %}
+
                         </select>
                       </div>
                       <div class="dropdown">
@@ -214,22 +227,22 @@
                         <select name="doctor">
                           {% for doctor in doctors %}
 
-                          {% if appointment.doctors.id == doctor.id %}
+                          {% if appointment.staff.id == doctor.id %}
 
-                          <option selected value="{{doctor.first_name}}">
+                          <option selected value="{{doctor.id}}">
                             {{doctor.first_name}} {{doctor.last_name}} -
-                            {{doctor.designation}}
+                            {{doctor.department}}
                           </option>
 
                           {% else %}
 
-                          <option value="{{doctor.first_name}}">
+                          <option value="{{doctor.id}}">
                             {{doctor.first_name}} {{doctor.last_name}} -
-                            {{doctor.designation}}
+                            {{doctor.department}}
                           </option>
 
                           {% endif %}
-                          
+
                           {% endfor %}
                         </select>
                       </div>

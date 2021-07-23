@@ -8,4 +8,3 @@ class Role(db.Model):
     name = db.Column(db.String(80), unique=True, nullable=False)
 
     staff = db.relationship('Staff', backref='roles', lazy=True)
-    doctors = db.relationship('Doctor', backref='roles', lazy=True)

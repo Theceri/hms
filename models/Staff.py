@@ -14,6 +14,9 @@ class Staff(db.Model):
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String, nullable = False)
 
+    appointments = db.relationship('Appointment', backref='staff', lazy=True)
+    # patients = db.relationship('Patient', backref='staff', lazy=True)
+
     def insert(self):
         db.add(self)
         db.commit()

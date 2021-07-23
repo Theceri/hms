@@ -10,12 +10,11 @@ app = Flask(__name__)
 ma = Marshmallow(app)
 
 from configs.base_config import *
-app.config.from_object(Development)
+app.config.from_object(Staging)
 
 db = SQLAlchemy(app)
 
 from models.Patient import Patient
-from models.Doctor import Doctor
 from models.Staff import Staff
 from models.Bill import Bill
 from models.Appointment import Appointment
@@ -50,9 +49,8 @@ def patients():
         gender = request.form['gender']
         address = request.form['address']
         telephone = request.form['telephone_number']
-        doctor = request.form['doctor']
 
-        new_patient = Patient(first_name = first_name, last_name = last_name, gender = gender, address = address, telephone = telephone, doctor_id = doctor)
+        new_patient = Patient(first_name = first_name, last_name = last_name, gender = gender, address = address, telephone = telephone)
 
         db.session.add(new_patient)
         db.session.commit()
@@ -61,7 +59,7 @@ def patients():
 
     genders = ['M', 'F']
     patients = Patient.query.all()
-    doctors = Doctor.query.all()
+    doctors = Staff.query.all()
 
     return render_template('patients.html', genders = genders, patients = patients, doctors = doctors)
 
@@ -75,7 +73,6 @@ def edit_patient():
         gender = request.form['gender']
         address = request.form['address']
         telephone = request.form['telephone']
-        doctor = request.form['doctor']
 
         patient_to_edit = Patient.query.filter_by(id = patient_id).first()
         patient_to_edit.first_name = first_name
@@ -83,7 +80,6 @@ def edit_patient():
         patient_to_edit.gender = gender
         patient_to_edit.address = address
         patient_to_edit.telephone = telephone
-        patient_to_edit.doctor_id = doctor
 
         db.session.add(patient_to_edit)
         db.session.commit()
@@ -94,21 +90,7 @@ def edit_patient():
 
 @app.route('/doctors', methods = ['GET', 'POST'])
 @login_required
-def doctors():
-    if request.method == 'POST':
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        gender = request.form['gender']
-        address = request.form['address']
-        designation = request.form['designation']
-
-        new_doctor = Doctor(first_name = first_name, last_name = last_name, gender = gender, address = address, designation = designation)
-
-        db.session.add(new_doctor)
-        db.session.commit()
-
-        flash("Doctor successfully added", "success")
-        
+def doctors():        
     genders = ['M', 'F']
     roles = Role.query.all()
     medical_staff = Staff.query.all()
@@ -231,8 +213,9 @@ def appointments():
         medication_report = request.form['medication_report']
         other_remarks = request.form['other_remarks']
         lab_report = request.form['lab_report']
+        status = request.form['status']
 
-        new_appointment = Appointment(patient = patient, doctor = doctor, start_time = start_time, end_time = end_time, triage_report = triage_report, symptoms_report = symptoms_report, medication_report = medication_report, other_remarks = other_remarks, lab_report = lab_report)
+        new_appointment = Appointment(patient = patient, doctor = doctor, start_time = start_time, end_time = end_time, triage_report = triage_report, symptoms_report = symptoms_report, medication_report = medication_report, other_remarks = other_remarks, lab_report = lab_report, status = status)
 
         db.session.add(new_appointment)
         db.session.commit()
@@ -240,7 +223,7 @@ def appointments():
         flash("Appointment successfully created", "success")
 
     patients = Patient.query.all()
-    doctors = Doctor.query.all()
+    doctors = Staff.query.all()
     appointments = Appointment.query.all()
 
     return render_template('appointments.html', patients = patients, doctors = doctors, appointments = appointments)
@@ -267,8 +250,8 @@ def edit_appointment():
         print(lab_report)
 
         appointment_to_edit = Appointment.query.filter_by(id = appointment_id).first()
-        appointment_to_edit.patient_id = patient
-        appointment_to_edit.doctor_id = doctor
+        appointment_to_edit.patient = patient
+        appointment_to_edit.doctor = doctor
         appointment_to_edit.start_time = start_time
         appointment_to_edit.end_time = end_time
         appointment_to_edit.triage_report = triage_report

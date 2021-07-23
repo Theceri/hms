@@ -14,12 +14,10 @@ class Development(Base):
     SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
 
 class Staging(Base):
-    # DATABASE = ""
-    # POSTGRES_USER = ""
-    # POSTGRES_PASSWORD = ""
-    # SQLALCHEMY_DATABASE_URI= ""
-        
-    pass
+    DATABASE = "purchases"
+    POSTGRES_USER = "postgres"
+    POSTGRES_PASSWORD = "1234"
+    SQLALCHEMY_DATABASE_URI= "172.17.0.1"
 
 class Production(Base):
     pass
