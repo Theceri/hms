@@ -110,9 +110,10 @@ def doctors():
         flash("Doctor successfully added", "success")
         
     genders = ['M', 'F']
-    doctors = Doctor.query.all()
+    roles = Role.query.all()
+    medical_staff = Staff.query.all()
 
-    return render_template('doctors.html', genders = genders, doctors = doctors)
+    return render_template('doctors.html', genders = genders, medical_staff = medical_staff, roles = roles)
 
 @app.route('/edit_doctor', methods = ['POST'])
 @login_required
@@ -121,18 +122,16 @@ def edit_doctor():
         doctor_id = request.form['doctor_id']
         first_name = request.form['first_name']
         last_name = request.form['last_name']
-        gender = request.form['gender']
-        address = request.form['address']
-        designation = request.form['designation']
+        department = request.form['department']
+        telephone = request.form['telephone']
 
-        doctor_to_edit = Doctor.query.filter_by(id = doctor_id).first()
-        doctor_to_edit.first_name = first_name
-        doctor_to_edit.last_name = last_name
-        doctor_to_edit.gender = gender
-        doctor_to_edit.address = address
-        doctor_to_edit.designation = designation
+        staff_to_edit = Staff.query.filter_by(id = doctor_id).first()
+        staff_to_edit.first_name = first_name
+        staff_to_edit.last_name = last_name
+        staff_to_edit.department = department
+        staff_to_edit.telephone = telephone
 
-        db.session.add(doctor_to_edit)
+        db.session.add(staff_to_edit)
         db.session.commit()
 
         flash("Doctor data successfully edited", "success")
@@ -142,27 +141,26 @@ def edit_doctor():
 @app.route('/staff', methods = ['GET', 'POST'])
 @login_required
 def staff():
-    # if request.method == 'POST':
-    #     first_name = request.form['first_name']
-    #     last_name = request.form['last_name']
-    #     department = request.form['department']
-    #     role = request.form['role']
-    #     telephone = request.form['telephone']
-    #     email = request.form['email']
-    #     role = request.form['role']
-    #     password = '1234'
-    #     hashed_password = generate_password_hash(password = password)
+    if request.method == 'POST':
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        department = request.form['department']
+        role = request.form['role']
+        telephone = request.form['telephone']
+        email = request.form['email']
+        password =  request.form['password']
+        hashed_password = generate_password_hash(password = password)
 
-    #     # check that email does not exist before registering the user
-    #     if Staff.check_email_exists(email):
-    #         flash("The user already exists. Please try registering with a different email.", "danger")
-    #     else:
-    #         new_staff_member = Staff(first_name = first_name, last_name = last_name, department = department, gender = gender, address = address, telephone = telephone, email = email, password = hashed_password, role = role)
+        # check that email does not exist before registering the user
+        if Staff.check_email_exists(email):
+            flash("The user already exists. Please try registering with a different email.", "danger")
+        else:
+            new_staff_member = Staff(first_name = first_name, last_name = last_name, department = department, role = role, telephone = telephone, email = email, password = hashed_password)
 
-    #         db.session.add(new_staff_member)
-    #         db.session.commit()
+            db.session.add(new_staff_member)
+            db.session.commit()
 
-    #         flash("Staff member successfully registered", "success")
+            flash("Staff member successfully registered", "success")
         
     genders = ['M', 'F']
     staff = Staff.query.all()
@@ -180,7 +178,6 @@ def edit_staff():
         department = request.form['department']
         role = request.form['role']
         telephone = request.form['telephone']
-        email = request.form['email']
         
         staff_to_edit = Staff.query.filter_by(id = staff_id).first()
         staff_to_edit.first_name = first_name
@@ -188,7 +185,6 @@ def edit_staff():
         staff_to_edit.department = department
         staff_to_edit.role = role
         staff_to_edit.telephone = telephone
-        staff_to_edit.email = email
 
         db.session.add(staff_to_edit)
         db.session.commit()
@@ -196,6 +192,31 @@ def edit_staff():
         flash("Staff data successfully edited", "success")
 
         return redirect(url_for('staff'))
+
+@app.route('/dashboard_doc', methods = ['POST'])
+@login_required
+def dashboard_doc():
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    department = request.form['department']
+    role = request.form['role']
+    telephone = request.form['telephone']
+    email = request.form['email']
+    password =  '1234'
+    hashed_password = generate_password_hash(password = password)
+
+    # check that email does not exist before registering the user
+    if Staff.check_email_exists(email):
+        flash("The user already exists. Please try registering with a different email.", "danger")
+    else:
+        new_staff_member = Staff(first_name = first_name, last_name = last_name, department = department, role = role, telephone = telephone, email = email, password = hashed_password)
+
+        db.session.add(new_staff_member)
+        db.session.commit()
+
+        flash("Doctor successfully registered", "success")
+
+    return redirect(url_for('doctors'))
 
 @app.route('/appointments', methods = ['GET', 'POST'])
 @login_required
@@ -263,6 +284,14 @@ def edit_appointment():
 
         return redirect(url_for('appointments'))
 
+@app.route('/appointments/<int:x>', methods = ['GET'])
+def patient_appointments(x):
+    if request.method == 'GET':
+        patient_appointments = Appointment.query.filter_by(patient = x).all()
+        print(patient_appointments)
+
+        return render_template('appointments.html', appointments = patient_appointments)
+
 @app.route('/register', methods = ['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -284,7 +313,9 @@ def register():
             db.session.add(new_staff_member)
             db.session.commit()
 
-            flash("You have successfully signed up. You can now log in to your account by going to the login page.", "success")
+            flash("You have successfully signed up. You can now log in to your account.", "success")
+
+            return redirect(url_for('login'))
 
     genders = ['M', 'F']
     roles = Role.query.all()

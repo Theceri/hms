@@ -212,17 +212,24 @@
                       <div class="dropdown">
                         <label for="">Choose Doctor</label>
                         <select name="doctor">
-                          {% for doctor in doctors %} {% if appointment.doctors.id == doctor.id %}
+                          {% for doctor in doctors %}
+
+                          {% if appointment.doctors.id == doctor.id %}
+
                           <option selected value="{{doctor.first_name}}">
                             {{doctor.first_name}} {{doctor.last_name}} -
                             {{doctor.designation}}
                           </option>
+
                           {% else %}
+
                           <option value="{{doctor.first_name}}">
                             {{doctor.first_name}} {{doctor.last_name}} -
                             {{doctor.designation}}
                           </option>
+
                           {% endif %}
+                          
                           {% endfor %}
                         </select>
                       </div>
