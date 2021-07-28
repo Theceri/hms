@@ -77,8 +77,13 @@
             </li>
           </ul>
         </div>
-        <div><a class="nav-link active btn btn-info text-light link-button m-2 me-auto" aria-current="page"
-            href="{{url_for('logout')}}">Log Out</a></div>
+        <div>
+          {% if logged_in %}
+           <i class="fas"> Signed in as: {{ first_name }} {{ last_name }}</i>
+          {% endif %}
+        </div>
+        <div><a class="nav-link active btn btn-info text-light link-button m-2 me-auto" aria-current="page" href="{{url_for('logout')}}">Log Out</a>
+        </div>
       </div>
     </nav>
   </div>

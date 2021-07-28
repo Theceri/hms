@@ -10,7 +10,7 @@ app = Flask(__name__)
 ma = Marshmallow(app)
 
 from configs.base_config import *
-app.config.from_object(Staging)
+app.config.from_object(Development)
 
 db = SQLAlchemy(app)
 
@@ -37,8 +37,11 @@ def login_required(f):
 @app.route('/', methods = ['GET', 'POST'])
 @login_required
 def dashboard():
+    logged_in = session['logged_in']
+    first_name = session['first_name']
+    last_name = session['last_name']
 
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', logged_in = logged_in, first_name = first_name, last_name = last_name)
 
 @app.route('/patients', methods = ['GET', 'POST'])
 @login_required
@@ -57,11 +60,14 @@ def patients():
 
         flash("Patient successfully added", "success")
 
+    logged_in = session['logged_in']
+    first_name = session['first_name']
+    last_name = session['last_name']
     genders = ['M', 'F']
     patients = Patient.query.all()
     doctors = Staff.query.all()
 
-    return render_template('patients.html', genders = genders, patients = patients, doctors = doctors)
+    return render_template('patients.html', genders = genders, patients = patients, doctors = doctors, logged_in = logged_in, first_name = first_name, last_name = last_name)
 
 @app.route('/edit_patient', methods = ['POST'])
 @login_required
@@ -91,11 +97,14 @@ def edit_patient():
 @app.route('/doctors', methods = ['GET', 'POST'])
 @login_required
 def doctors():        
+    logged_in = session['logged_in']
+    first_name = session['first_name']
+    last_name = session['last_name']
     genders = ['M', 'F']
     roles = Role.query.all()
     medical_staff = Staff.query.all()
 
-    return render_template('doctors.html', genders = genders, medical_staff = medical_staff, roles = roles)
+    return render_template('doctors.html', genders = genders, medical_staff = medical_staff, roles = roles, logged_in = logged_in, first_name = first_name, last_name = last_name)
 
 @app.route('/edit_doctor', methods = ['POST'])
 @login_required
@@ -144,11 +153,14 @@ def staff():
 
             flash("Staff member successfully registered", "success")
         
+    logged_in = session['logged_in']
+    first_name = session['first_name']
+    last_name = session['last_name']
     genders = ['M', 'F']
     staff = Staff.query.all()
     roles = Role.query.all()
 
-    return render_template('staff.html', genders = genders, staff = staff, roles = roles)
+    return render_template('staff.html', genders = genders, staff = staff, roles = roles, logged_in = logged_in, first_name = first_name, last_name = last_name)
 
 @app.route('/edit_staff', methods = ['POST'])
 @login_required
@@ -203,57 +215,65 @@ def dashboard_doc():
 @app.route('/appointments', methods = ['GET', 'POST'])
 @login_required
 def appointments():
-    if request.method == 'POST':
-        patient = request.form['patient']
-        doctor = request.form['doctor']
-        start_time = request.form['start_time']
-        end_time = request.form['end_time']
-        triage_report = request.form['triage_report']
-        symptoms_report = request.form['symptoms_report']
-        medication_report = request.form['medication_report']
-        other_remarks = request.form['other_remarks']
-        lab_report = request.form['lab_report']
-        status = request.form['status']
+    if session:
+        role = session['role']
+        staff_id = session['staff_id']
 
-        new_appointment = Appointment(patient = patient, doctor = doctor, start_time = start_time, end_time = end_time, triage_report = triage_report, symptoms_report = symptoms_report, medication_report = medication_report, other_remarks = other_remarks, lab_report = lab_report, status = status)
+        if request.method == 'POST':
+            patient = request.form['patient']
+            doctor = request.form['doctor']
+            start_time = request.form['start_time']
+            end_time = request.form['end_time']
+            triage_report = request.form['triage_report']
+            symptoms_report = request.form['symptoms_report']
+            medication_report = request.form['medication_report']
+            other_remarks = request.form['other_remarks']
+            lab_report = request.form['lab_report']
+            status = request.form['status']
 
-        db.session.add(new_appointment)
-        db.session.commit()
+            new_appointment = Appointment(patient = patient, doctor = doctor, start_time = start_time, end_time = end_time, triage_report = triage_report, symptoms_report = symptoms_report, medication_report = medication_report, other_remarks = other_remarks, lab_report = lab_report, status = status)
 
-        flash("Appointment successfully created", "success")
+            db.session.add(new_appointment)
+            db.session.commit()
 
-    patients = Patient.query.all()
-    doctors = Staff.query.all()
-    appointments = Appointment.query.all()
+            flash("Appointment successfully created", "success")
 
-    return render_template('appointments.html', patients = patients, doctors = doctors, appointments = appointments)
+        logged_in = session['logged_in']
+        first_name = session['first_name']
+        last_name = session['last_name']
+
+        patients = Patient.query.all()
+        doctors = Staff.query.all()
+        appointments = Appointment.query.all()
+
+        return render_template('appointments.html', patients = patients, doctors = doctors, appointments = appointments, role = role, staff_id = staff_id, logged_in = logged_in, first_name = first_name, last_name = last_name)
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/edit_appointment', methods = ['POST'])
 @login_required
 def edit_appointment():
     if request.method == 'POST':
         appointment_id = request.form['appointment_id']
-        patient = request.form['patient']
-        doctor = request.form['doctor']
-        start_time = request.form['start_time']
-        end_time = request.form['end_time']
-        triage_report = request.form['triage_report']
-        symptoms_report = request.form['symptoms_report']
-        medication_report = request.form['medication_report']
-        other_remarks = request.form['other_remarks']
-        lab_report = request.form['lab_report']
-        
-        print(triage_report)
-        print(symptoms_report)
-        print(medication_report)
-        print(other_remarks)
-        print(lab_report)
 
         appointment_to_edit = Appointment.query.filter_by(id = appointment_id).first()
+        
+        patient = request.form.get('patient', appointment_to_edit.patient)
+        doctor = request.form.get('doctor', appointment_to_edit.doctor)
+        start_time = request.form.get('start_time', appointment_to_edit.start_time)
+        end_time = request.form.get('end_time', appointment_to_edit.end_time)
+        status = request.form.get('status', appointment_to_edit.status)
+        triage_report = request.form.get('triage_report', appointment_to_edit.triage_report)
+        symptoms_report = request.form.get('symptoms_report', appointment_to_edit.symptoms_report)
+        medication_report = request.form.get('medication_report', appointment_to_edit.medication_report)
+        other_remarks = request.form.get('other_remarks', appointment_to_edit.other_remarks)
+        lab_report = request.form.get('lab_report', appointment_to_edit.lab_report)
+
         appointment_to_edit.patient = patient
         appointment_to_edit.doctor = doctor
         appointment_to_edit.start_time = start_time
         appointment_to_edit.end_time = end_time
+        appointment_to_edit.status =status
         appointment_to_edit.triage_report = triage_report
         appointment_to_edit.symptoms_report = symptoms_report
         appointment_to_edit.medication_report = medication_report
@@ -273,7 +293,11 @@ def patient_appointments(x):
         patient_appointments = Appointment.query.filter_by(patient = x).all()
         print(patient_appointments)
 
-        return render_template('appointments.html', appointments = patient_appointments)
+        logged_in = session['logged_in']
+        first_name = session['first_name']
+        last_name = session['last_name']
+
+        return render_template('patient_appointments.html', appointments = patient_appointments, logged_in = logged_in, first_name = first_name, last_name = last_name)
 
 @app.route('/register', methods = ['GET', 'POST'])
 def register():
@@ -317,6 +341,9 @@ def login():
            if Staff.check_password(email = email, password = password):
                session['logged_in'] = True
                session['first_name'] = Staff.fetch_by_email(email).first_name
+               session['last_name'] = Staff.fetch_by_email(email).last_name
+               session['role'] = Staff.fetch_by_email(email).roles.name
+               session['staff_id'] = Staff.fetch_by_email(email).id
 
                return redirect(url_for('dashboard'))
            else:
@@ -339,19 +366,29 @@ def logout():
 @app.route('/roles', methods = ['GET', 'POST'])
 @login_required
 def roles():
-    if request.method == 'POST':
-        name = request.form['name']
-
-        new_role = Role(name = name)
-
-        db.session.add(new_role)
-        db.session.commit()
-
-        flash("Role successfully added", "success")
+    if session:
         
-    roles = Role.query.all()
+        role = session['role']
 
-    return render_template('roles.html', roles = roles)
+        if request.method == 'POST':
+            name = request.form['name']
+
+            new_role = Role(name = name)
+
+            db.session.add(new_role)
+            db.session.commit()
+
+            flash("Role successfully added", "success")
+            
+        logged_in = session['logged_in']
+        first_name = session['first_name']
+        last_name = session['last_name']
+        
+        roles = Role.query.all()
+
+        return render_template('roles.html', roles = roles, role=role, logged_in = logged_in, first_name = first_name, last_name = last_name)
+    else:
+        return redirect(url_for("login"))
 
 @app.route('/edit_role', methods = ['POST'])
 @login_required

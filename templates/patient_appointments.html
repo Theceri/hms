@@ -2,9 +2,9 @@
 
 <div class="container">
   <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary mb-3 mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  <!-- <button type="button" class="btn btn-primary mb-3 mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
     Create Appointment
-  </button>
+  </button> --> 
 
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -92,7 +92,7 @@
   <div>
     <div class="row">
       {% for appointment in appointments %}
-      {% if role == 'Admin' or staff_id == appointment.staff.id %}
+      
       <div class="col mb-4">
         <div class="card" style="width: 500px">
           <h5 class="card-header">
@@ -330,7 +330,6 @@
           </div>
         </div>
       </div>
-      {% endif %}
       {% endfor %}
     </div>
   </div>

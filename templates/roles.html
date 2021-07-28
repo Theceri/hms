@@ -34,8 +34,6 @@
     <table id="myTable" class="table">
         <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">id</th>
                 <th scope="col">Role Name</th>
                 <th scope="col">Edit</th>
             </tr>
@@ -43,8 +41,6 @@
         <tbody>
             {% for role in roles %}
             <tr>
-                <td></td>
-                <td>{{role.id}}</td>
                 <td>{{role.name}}</td>
                 <td>
                     <a href="" type="button" class="btn btn-primary" data-bs-toggle="modal"
