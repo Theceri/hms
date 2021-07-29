@@ -16,13 +16,15 @@ db = SQLAlchemy(app)
 
 from models.Patient import Patient
 from models.Staff import Staff
-from models.Bill import Bill
 from models.Appointment import Appointment
 from models.Role import Role
+
+from utils.init_roles import *
 
 @app.before_first_request
 def create_tables():
     db.create_all()
+    seeding()
 
 def login_required(f):
     @wraps(f)
@@ -41,7 +43,12 @@ def dashboard():
     first_name = session['first_name']
     last_name = session['last_name']
 
-    return render_template('dashboard.html', logged_in = logged_in, first_name = first_name, last_name = last_name)
+    patient_count = Patient.query.count()
+    staff_count = Staff.query.count()
+    doctor_count = Staff.query.filter_by(role = 2).count()
+    appointment_count = Appointment.query.count()
+
+    return render_template('dashboard.html', logged_in = logged_in, first_name = first_name, last_name = last_name, patient_count = patient_count, staff_count = staff_count, appointment_count = appointment_count, doctor_count = doctor_count)
 
 @app.route('/patients', methods = ['GET', 'POST'])
 @login_required
@@ -63,6 +70,7 @@ def patients():
     logged_in = session['logged_in']
     first_name = session['first_name']
     last_name = session['last_name']
+
     genders = ['M', 'F']
     patients = Patient.query.all()
     doctors = Staff.query.all()
