@@ -17,7 +17,7 @@ class Staging(Base):
     DATABASE = "d5pjjee5639vdt"
     POSTGRES_USER = "lwkpjzajnzxfbi"
     POSTGRES_PASSWORD = "a00b3c6741edc36ddf796ea948f820a58a90cf07104be13f7e0781034cb2d572"
-    SQLALCHEMY_DATABASE_URI= "postgres://lwkpjzajnzxfbi:a00b3c6741edc36ddf796ea948f820a58a90cf07104be13f7e0781034cb2d572@ec2-54-155-35-88.eu-west-1.compute.amazonaws.com:5432/d5pjjee5639vdt"
+    SQLALCHEMY_DATABASE_URI= "postgresql://lwkpjzajnzxfbi:a00b3c6741edc36ddf796ea948f820a58a90cf07104be13f7e0781034cb2d572@ec2-54-155-35-88.eu-west-1.compute.amazonaws.com:5432/d5pjjee5639vdt"
 
 class Production(Base):
     pass
