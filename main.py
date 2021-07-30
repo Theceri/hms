@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 
 from configs.base_config import *
-app.config.from_object(Development)
+app.config.from_object(Staging)
 
 db = SQLAlchemy(app)
 
