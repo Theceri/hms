@@ -1,0 +1,8 @@
+FROM postgres
+
+ENV POSTGRES_USER=paul
+ENV POSTGRES_PASSWORD=paul
+ENV POSTGRES_DB=hms
+EXPOSE 5432
+
+# the above goes with the command: docker run --name hms-postgres -e POSTGRES_PASSWORD=password -d -p 5432:5432 postgres:alpine

@@ -6,8 +6,9 @@ import os
 
 app = Flask(__name__)
 
+
 from configs.base_config import *
-app.config.from_object(Staging)
+app.config.from_object(Development)
 
 db = SQLAlchemy(app)
 
@@ -339,6 +340,8 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+        print(email)
+        print(password)
 
         # check if email exist
         if Staff.check_email_exists(email = email):

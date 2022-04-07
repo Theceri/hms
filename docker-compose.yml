@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  flask_app: 
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on: # specifying that the flask app has to wait for the db to run first to avoid a race condition
+      - db
+  db:
+    build:
+      dockerfile: Dockerfile.db # 
+      context: .
+    ports:
+      - "5432:5432"
